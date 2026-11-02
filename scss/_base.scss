@@ -1,0 +1,91 @@
+@use "variables" as *;
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: $c-base;
+  color: $c-ink;
+  font-family: $f-body;
+  font-size: 16px;
+  line-height: 1.9;
+  letter-spacing: .03em;
+  font-feature-settings: "palt" 0;
+  font-variant-numeric: lining-nums; // セリフ体の数字も高さをそろえる
+  overflow-x: hidden;
+  @include sp { font-size: 15px; }
+}
+body.is-locked { overflow: hidden; }
+
+img, svg { max-width: 100%; vertical-align: middle; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; cursor: pointer; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+h1, h2, h3, h4, p, figure, dl, dd { margin: 0; }
+p, li, dd { text-wrap: pretty; }
+input, select, textarea { font: inherit; color: inherit; }
+
+:focus-visible { outline: 3px solid rgba($c-leaf, .7); outline-offset: 3px; border-radius: 6px; }
+
+[hidden] { display: none !important; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+// 見出しの中の数字は明朝になじむセリフ体に
+h1 .num, h2 .num, h3 .num, .c-head__title .num, .p-story__msg .num { font-family: $f-display; font-size: 1.1em; font-weight: 600; letter-spacing: 0; }
+
+// 英数字：日本語と見た目の高さをそろえる
+.num, .en {
+  font-family: $f-en;
+  font-size: .95em;
+  letter-spacing: .02em;
+}
+
+.l-container {
+  width: min(100% - 48px, $w-content);
+  margin-inline: auto;
+  @include sp { width: calc(100% - 40px); }
+}
+.l-narrow { width: min(100% - 48px, 760px); margin-inline: auto; @include sp { width: calc(100% - 40px); } }
+
+.l-section {
+  padding-block: $section-space;
+  position: relative;
+  @include sp { padding-block: $section-space-sp; }
+  &--tint { background: $c-base-deep; }
+  &--paper { background: $c-paper; }
+  &--leaf { background: $c-leaf-pale; }
+}
+
+main { display: block; padding-top: $header-h; @include sp { padding-top: 64px; } }
+
+// 見出し
+.c-head {
+  margin-bottom: 56px;
+  @include sp { margin-bottom: 36px; }
+  &__en {
+    display: inline-flex; align-items: center; gap: 12px;
+    font-family: $f-display; font-style: italic; font-weight: 500;
+    font-size: 22px; letter-spacing: .02em; line-height: 1;
+    color: $c-soil;
+    margin-bottom: 14px;
+    &::before { content: ""; width: 28px; height: 1px; background: $c-soil; }
+    @include sp { font-size: 19px; }
+  }
+  &__title {
+    font-family: $f-head;
+    font-weight: 600;
+    color: $c-deep;
+    font-size: clamp(30px, 3.6vw, 48px);
+    line-height: 1.45;
+    letter-spacing: .06em;
+    @include sp { font-size: 27px; letter-spacing: .04em; }
+  }
+  &__lead { margin-top: 20px; color: $c-ink-sub; max-width: 34em; }
+  &--center { text-align: center; .c-head__lead { margin-inline: auto; } }
+}
+
+.u-pc { @include sp { display: none !important; } }
+.u-sp { @include pc { display: none !important; } }
+.u-mt-l { margin-top: 56px; }
+.u-center { text-align: center; }
+.u-note { font-size: 13px; color: $c-ink-sub; }

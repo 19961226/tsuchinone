@@ -1,0 +1,111 @@
+@use "variables" as *;
+
+.l-header {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 100;
+  height: $header-h;
+  transition: background .4s $ease, box-shadow .4s $ease, height .4s $ease;
+  @include sp { height: 64px; }
+  // 背景とぼかしは ::before に置く（header に backdrop-filter を付けると、
+  // 中のドロワーメニュー（position: fixed）がヘッダーの高さしか背景を持てなくなるため）
+  &::before {
+    content: ""; position: absolute; inset: 0; z-index: -1;
+    background: rgba($c-base, .94); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 1px 0 $c-line;
+    opacity: 0; transition: opacity .4s $ease;
+  }
+  &.is-scrolled::before { opacity: 1; }
+  &__inner {
+    height: 100%;
+    width: min(100% - 48px, 1280px);
+    margin-inline: auto;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    @include sp { width: calc(100% - 32px); gap: 12px; }
+  }
+  &__logo {
+    flex-shrink: 0;
+    // <!-- 仮ロゴ：images/logo/logo-temp.svg を正式ロゴに差し替え -->
+    .c-logo { width: 176px; height: auto; display: block; @include sp { width: 138px; } }
+  }
+}
+
+.g-nav {
+  margin-left: auto;
+  &__list { display: flex; gap: 26px; }
+  &__link {
+    font-size: 14px;
+    font-weight: 500;
+    position: relative;
+    padding-block: 6px;
+    &::after {
+      content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; border-radius: 2px;
+      background: $c-leaf; transform: scaleX(0); transform-origin: left; transition: transform .35s $ease;
+    }
+    &[aria-current="page"]::after { transform: scaleX(1); }
+    @include hover { &::after { transform: scaleX(1); } }
+  }
+  @include tab {
+    position: fixed;
+    inset: 0;
+    background: $c-base;
+    padding: 110px 32px 40px;
+    transform: translateX(100%);
+    transition: transform .5s $ease;
+    z-index: -1;
+    &.is-open { transform: none; }
+    &__list { flex-direction: column; gap: 0; }
+    &__item { border-bottom: 1px dashed $c-line; }
+    &__link { display: block; padding: 18px 4px; font-size: 17px; font-family: $f-body; font-weight: 700; color: $c-deep; &::after { display: none; } }
+  }
+}
+.g-nav__cta { display: none; @include tab { display: block; margin-top: 32px; } }
+
+.l-header__actions { display: flex; align-items: center; gap: 12px; @include tab { margin-left: auto; } }
+
+.c-cart-btn {
+  position: relative;
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  border: 1.5px solid $c-deep;
+  background: $c-paper;
+  display: grid; place-items: center;
+  color: $c-deep;
+  transition: background .3s, color .3s, transform .3s $ease;
+  svg { width: 22px; height: 22px; }
+  @include hover { background: $c-deep; color: $c-paper; transform: translateY(-2px); }
+  &__badge {
+    position: absolute; top: -4px; right: -4px;
+    min-width: 21px; height: 21px; padding: 0 5px;
+    border-radius: 11px;
+    background: $c-carrot; color: #fff;
+    font-family: $f-en; font-size: 11px; font-weight: 600; line-height: 21px; text-align: center;
+    &.is-bump { animation: badge-bump .55s $ease; }
+    &[data-count="0"] { display: none; }
+  }
+}
+@keyframes badge-bump { 0% { transform: scale(1); } 35% { transform: scale(1.45); } 65% { transform: scale(.9); } 100% { transform: scale(1); } }
+
+.l-header .l-header__trial { @include sp { display: none; } }
+
+.c-burger {
+  display: none;
+  width: 46px; height: 46px; border: 0; border-radius: 50%;
+  background: $c-deep;
+  position: relative;
+  @include tab { display: block; }
+  span {
+    position: absolute; left: 14px; right: 14px; height: 2px; background: $c-paper; border-radius: 2px;
+    transition: transform .35s $ease, opacity .2s;
+    &:nth-child(1) { top: 17px; }
+    &:nth-child(2) { top: 23px; }
+    &:nth-child(3) { top: 29px; }
+  }
+  &[aria-expanded="true"] span {
+    &:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+    &:nth-child(2) { opacity: 0; }
+    &:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+  }
+}

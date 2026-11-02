@@ -1,0 +1,40 @@
+// ===== 色 =====
+$c-base: #FFFFFF;        // 全体の背景（白）
+$c-base-deep: #EDE5D3;   // 生成り（濃）
+$c-paper: #FFFFFF;       // カード面（白）
+$c-leaf: #8BAE5B;        // 若葉のグリーン
+$c-leaf-pale: #E3EBD2;   // 若葉（淡）
+$c-deep: #2F5134;        // 深緑（ロゴ・見出し・ボタン）
+$c-soil: #8A6748;        // 土のブラウン
+$c-soil-pale: #EADFCB;   // 土（淡）
+$c-fv: #E3D7AD;          // FVの背景
+$c-carrot: #E39A5B;      // 人参色（タグ・バッジのみ）
+$c-ink: #2B231C;         // 文字（こげ茶）
+$c-ink-sub: #6B5E52;     // 補足文字
+$c-line: rgba(43, 35, 28, .14);
+
+// ===== 文字 =====
+// Google Fonts
+// 本文：Zen Kaku Gothic Antique（昔ながらのかなの形のゴシック）
+// タイトル・ロゴ：Shippori Mincho（細身で品のある明朝）
+// タイトルまわりの欧文・大きな数字：Cormorant Garamond（明朝になじむ欧文セリフ。英字ラベルはイタリック）
+// ボタン・価格などの小さな英数字：Figtree（小さくても読みやすい欧文）
+$f-body: "Zen Kaku Gothic Antique", "Hiragino Sans", "Yu Gothic", sans-serif;
+$f-head: "Shippori Mincho", "Yu Mincho", "Hiragino Mincho ProN", serif;
+$f-display: "Cormorant Garamond", "Shippori Mincho", serif;
+$f-en: "Figtree", "Helvetica Neue", Arial, sans-serif;
+
+// ===== サイズ =====
+$w-content: 1120px;
+$radius: 12px;
+$section-space: 120px;
+$section-space-sp: 72px;
+$header-h: 76px;
+
+$ease: cubic-bezier(.22, .8, .32, 1);
+
+// ===== ブレイクポイント =====
+@mixin sp { @media (max-width: 767px) { @content; } }
+@mixin tab { @media (max-width: 1023px) { @content; } }
+@mixin pc { @media (min-width: 768px) { @content; } }
+@mixin hover { @media (hover: hover) and (pointer: fine) { &:hover { @content; } } }

@@ -1,0 +1,391 @@
+@use "variables" as *;
+
+// ===== ボタン =====
+.c-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  min-height: 56px; padding: 14px 30px;
+  border-radius: 999px;
+  border: 1.5px solid $c-deep;
+  background: $c-deep; color: $c-paper;
+  font-family: $f-body; font-weight: 700; font-size: 16px; letter-spacing: .06em; line-height: 1.4;
+  text-align: center;
+  transition: background .35s $ease, color .35s $ease, transform .35s $ease, box-shadow .35s $ease;
+  box-shadow: 0 4px 0 rgba($c-deep, .25);
+  .c-btn__arrow { width: 18px; height: 18px; flex-shrink: 0; transition: transform .35s $ease; }
+  @include hover {
+    background: #3C6642;
+    transform: translateY(-3px);
+    box-shadow: 0 7px 0 rgba($c-deep, .2);
+    .c-btn__arrow { transform: translateX(3px); }
+  }
+  &:active { transform: translateY(1px); box-shadow: 0 2px 0 rgba($c-deep, .25); }
+  &--ghost {
+    background: transparent; color: $c-deep; box-shadow: none;
+    @include hover { background: $c-leaf-pale; box-shadow: none; }
+  }
+  &--white { background: #fff; color: $c-deep; border-color: #fff; box-shadow: 0 4px 0 rgba($c-deep, .12);
+    @include hover { background: #fff; border-color: $c-deep; box-shadow: 0 7px 0 rgba($c-deep, .12); }
+  }
+  &--light { background: $c-paper; color: $c-deep; border-color: $c-paper; box-shadow: 0 4px 0 rgba(0,0,0,.15);
+    @include hover { background: #fff; }
+  }
+  @include sp { padding: 14px 20px; font-size: 15px; letter-spacing: .03em; }
+  &--sm { min-height: 44px; padding: 8px 20px; font-size: 14px; box-shadow: 0 3px 0 rgba($c-deep, .22); }
+  // ボタンは文字に合わせた幅（画面やコンテンツの幅いっぱいには広げない）。--block は「1行を使って中央に置く」
+  &--block { display: flex; width: fit-content; max-width: 100%; margin-inline: auto; }
+  &__note { font-size: .78em; font-weight: 500; opacity: .9; @include sp { display: block; } }
+  &[disabled] { opacity: .45; pointer-events: none; }
+}
+
+.c-link {
+  display: inline-flex; align-items: center; gap: 8px; font-weight: 700; color: $c-deep;
+  border-bottom: 1.5px solid currentColor; padding-bottom: 2px;
+  @include hover { color: $c-leaf; }
+}
+
+// ===== 画像の枠（画像がない・読み込めないときは仮表示） =====
+.c-media {
+  position: relative;
+  overflow: hidden;
+  border-radius: $radius;
+  background:
+    repeating-linear-gradient(135deg, rgba($c-soil, .06) 0 10px, transparent 10px 20px),
+    $c-soil-pale;
+  aspect-ratio: var(--ratio, 4 / 3);
+  // 画像は読み込めたときだけ表示（読み込めない・まだない場合は下の仮ラベルが見える）
+  img { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .6s ease; }
+  img.is-loaded { opacity: 1; }
+  &__label {
+    position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; text-align: center;
+    padding: 12px; font-size: 12.5px; line-height: 1.6; color: $c-soil;
+    &::before { content: "PHOTO"; display: block; font-family: $f-en; font-size: 11px; letter-spacing: .2em; font-weight: 600; opacity: .7; }
+  }
+  img.is-missing { display: none; }
+}
+
+// ===== タグ =====
+.c-tag {
+  display: inline-block; padding: 2px 12px; border-radius: 999px;
+  font-size: 12px; font-weight: 700; letter-spacing: .06em;
+  background: $c-leaf-pale; color: $c-deep;
+  &--carrot { background: #F7DEC8; color: #9A5220; }
+  &--soil { background: $c-soil-pale; color: $c-soil; }
+  &--deep { background: $c-deep; color: $c-paper; }
+}
+.c-placeholder { color: $c-soil; background: rgba($c-carrot, .12); border-radius: 4px; padding: 0 4px; }
+
+// ===== 畝の波線（セクション区切り） =====
+.c-wave {
+  display: block; width: 100%; height: 28px; color: $c-base-deep;
+  &--paper { color: $c-paper; }
+  &--leaf { color: $c-leaf-pale; }
+  &--flip { transform: scaleY(-1); }
+  svg { display: block; width: 100%; height: 100%; }
+}
+
+// ===== 商品カード =====
+.c-products {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px 28px;
+  @include tab { grid-template-columns: repeat(2, 1fr); }
+  @include sp { grid-template-columns: 1fr; gap: 24px; }
+}
+.c-product {
+  background: $c-paper;
+  border-radius: $radius;
+  padding: 14px 14px 20px;
+  display: flex; flex-direction: column;
+  border: 1px solid $c-line;
+  transition: transform .4s $ease, box-shadow .4s $ease;
+  @include hover { transform: translateY(-4px); box-shadow: 0 14px 30px -18px rgba($c-ink, .4); }
+  &__open { all: unset; cursor: pointer; display: block; border-radius: $radius;
+    &:focus-visible { outline: 3px solid rgba($c-leaf, .7); outline-offset: 3px; }
+  }
+  &__media { --ratio: 4 / 3; }
+  &__cat { position: absolute; top: 10px; left: 10px; z-index: 1; }
+  &__body { padding: 16px 6px 0; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+  &__name { font-family: $f-head; font-weight: 600; font-size: 19px; color: $c-deep; line-height: 1.5; }
+  &__desc { font-size: 14px; color: $c-ink-sub; line-height: 1.7; }
+  &__buy { margin-top: auto; padding-top: 12px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  &__price { font-family: $f-en; font-weight: 600; font-size: 20px; color: $c-ink; margin-right: auto;
+    small { font-family: $f-body; font-size: 12px; font-weight: 500; color: $c-ink-sub; margin-left: 2px; }
+  }
+}
+
+// 数量
+.c-qty {
+  display: inline-flex; align-items: center; border: 1px solid $c-line; border-radius: 999px; background: #fff; overflow: hidden;
+  button { width: 34px; height: 36px; border: 0; background: none; font-size: 17px; color: $c-deep;
+    @include hover { background: $c-leaf-pale; }
+  }
+  input { width: 34px; border: 0; text-align: center; font-family: $f-en; font-weight: 600; background: none; -moz-appearance: textfield;
+    &::-webkit-inner-spin-button, &::-webkit-outer-spin-button { -webkit-appearance: none; }
+  }
+}
+
+// ===== モーダル =====
+.c-modal {
+  position: fixed; inset: 0; z-index: 300;
+  display: grid; place-items: center; padding: 24px;
+  visibility: hidden; opacity: 0; transition: opacity .35s $ease, visibility .35s;
+  &.is-open { visibility: visible; opacity: 1; }
+  &__overlay { position: absolute; inset: 0; background: rgba($c-ink, .55); }
+  &__panel {
+    position: relative; width: min(100%, 880px); max-height: calc(100dvh - 48px); overflow: auto;
+    background: $c-paper; border-radius: 20px; padding: 36px;
+    transform: translateY(24px) scale(.97); transition: transform .45s $ease;
+    @include sp { padding: 24px 20px; border-radius: 16px; }
+  }
+  &.is-open &__panel { transform: none; }
+  &__close {
+    position: absolute; top: 14px; right: 14px; width: 44px; height: 44px; border-radius: 50%;
+    border: 1px solid $c-line; background: #fff; font-size: 22px; line-height: 1; color: $c-deep; z-index: 2;
+    @include hover { background: $c-leaf-pale; }
+  }
+  &__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; @include sp { grid-template-columns: 1fr; gap: 20px; } }
+  &__title { font-family: $f-head; font-size: 26px; color: $c-deep; line-height: 1.45; margin: 10px 0 10px; @include sp { font-size: 22px; } }
+  &__spec { margin: 18px 0; border-top: 1px dashed $c-line; font-size: 14px;
+    div { display: grid; grid-template-columns: 7em 1fr; gap: 12px; padding: 10px 0; border-bottom: 1px dashed $c-line; }
+    dt { color: $c-soil; font-weight: 700; }
+  }
+  &__buy { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+}
+
+// ===== カート（右からスライド） =====
+.c-cart {
+  position: fixed; inset: 0; z-index: 280; visibility: hidden; transition: visibility .45s;
+  &.is-open { visibility: visible; }
+  &__overlay { position: absolute; inset: 0; background: rgba($c-ink, .45); opacity: 0; transition: opacity .45s $ease; }
+  &.is-open &__overlay { opacity: 1; }
+  &__panel {
+    position: absolute; top: 0; right: 0; bottom: 0; width: min(100%, 420px);
+    background: $c-paper; display: flex; flex-direction: column;
+    transform: translateX(100%); transition: transform .5s $ease;
+    box-shadow: -10px 0 40px -20px rgba(0,0,0,.35);
+  }
+  &.is-open &__panel { transform: none; }
+  &__head { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid $c-line;
+    h2 { font-family: $f-head; font-size: 20px; color: $c-deep; }
+  }
+  &__close { width: 40px; height: 40px; border-radius: 50%; border: 1px solid $c-line; background: #fff; font-size: 20px; color: $c-deep; }
+  &__body { flex: 1; overflow: auto; padding: 8px 24px; }
+  &__empty { text-align: center; padding: 48px 0; color: $c-ink-sub;
+    img { width: 72px; margin-bottom: 12px; }
+  }
+  &__foot { padding: 20px 24px 24px; border-top: 1px solid $c-line; background: $c-base; }
+  &__sum { display: grid; grid-template-columns: 1fr auto; gap: 6px; font-size: 14px; margin-bottom: 16px;
+    .is-total { font-weight: 700; font-size: 17px; padding-top: 8px; border-top: 1px dashed $c-line; }
+  }
+}
+.c-cart-item {
+  display: grid; grid-template-columns: 64px 1fr; gap: 14px; padding: 16px 0; border-bottom: 1px dashed $c-line;
+  &__media { --ratio: 1; border-radius: 8px; .c-media__label { font-size: 0; &::before { font-size: 9px; } } }
+  &__name { font-weight: 700; font-size: 14.5px; line-height: 1.5; }
+  &__price { font-family: $f-en; font-size: 14px; color: $c-ink-sub; }
+  &__row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; }
+  &__remove { border: 0; background: none; font-size: 12.5px; color: $c-soil; text-decoration: underline; text-underline-offset: 3px; }
+}
+
+.c-demo-note {
+  display: flex; gap: 8px; align-items: flex-start;
+  padding: 10px 14px; border-radius: 10px; background: rgba($c-carrot, .14); color: #8A4A1B;
+  font-size: 13px; line-height: 1.6;
+  &::before { content: "DEMO"; font-family: $f-en; font-weight: 600; font-size: 10.5px; letter-spacing: .14em; background: $c-carrot; color: #fff; padding: 1px 7px; border-radius: 4px; margin-top: 2px; }
+}
+
+// カートへ飛ぶアイコン
+.c-fly {
+  position: fixed; z-index: 400; width: 40px; height: 40px; pointer-events: none;
+  transition: transform .75s cubic-bezier(.5, -0.3, .7, 1), opacity .75s;
+  img { width: 100%; height: 100%; }
+}
+
+// ===== アコーディオン =====
+.c-faq {
+  border-top: 1px dashed $c-line;
+  &__item { border-bottom: 1px dashed $c-line; }
+  &__q {
+    width: 100%; display: flex; align-items: center; gap: 16px; text-align: left;
+    padding: 22px 4px; border: 0; background: none; font-weight: 700; font-size: 16.5px;
+    &::before { content: "Q"; font-family: $f-en; font-weight: 600; color: $c-leaf; font-size: 20px; }
+    @include hover { color: $c-deep; }
+  }
+  &__icon { margin-left: auto; width: 30px; height: 30px; border-radius: 50%; background: $c-leaf-pale; position: relative; flex-shrink: 0;
+    &::before, &::after { content: ""; position: absolute; left: 9px; right: 9px; top: 14px; height: 2px; background: $c-deep; border-radius: 2px; transition: transform .35s $ease; }
+    &::after { transform: rotate(90deg); }
+  }
+  &__q[aria-expanded="true"] .c-faq__icon::after { transform: rotate(0); }
+  &__a { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .45s $ease;
+    > div { overflow: hidden; }
+    p { padding: 0 4px 24px 40px; color: $c-ink-sub; }
+  }
+  &__q[aria-expanded="true"] + .c-faq__a { grid-template-rows: 1fr; }
+}
+
+// ===== タブ・絞り込み =====
+.c-filter {
+  position: relative; // 中の .sr-only がはみ出さないように
+  display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 40px;
+  // スマホでも横スクロールにせず、幅に応じて折り返す
+  @include sp { gap: 8px; margin-bottom: 32px; }
+  button {
+    flex-shrink: 0;
+    padding: 9px 20px; border-radius: 999px; border: 1.5px solid $c-deep; background: transparent; color: $c-deep;
+    font-weight: 700; font-size: 14px; transition: background .3s, color .3s;
+    @include sp { padding: 8px 16px; font-size: 13px; }
+    &[aria-selected="true"], &[aria-pressed="true"] { background: $c-deep; color: $c-paper; }
+    @include hover { background: $c-leaf-pale; }
+    &[aria-selected="true"], &[aria-pressed="true"] { @include hover { background: $c-deep; } }
+  }
+}
+
+// ===== フォーム =====
+.c-form {
+  display: grid; gap: 26px;
+  &__label { display: flex; align-items: center; gap: 10px; font-weight: 700; margin-bottom: 8px; }
+  &__req { font-size: 11.5px; padding: 1px 8px; border-radius: 4px; background: $c-carrot; color: #fff; }
+  &__opt { font-size: 11.5px; padding: 1px 8px; border-radius: 4px; background: $c-soil-pale; color: $c-soil; }
+  input[type="text"], input[type="email"], input[type="tel"], input[type="password"], textarea {
+    width: 100%; padding: 14px 16px; border-radius: 10px; border: 1.5px solid $c-line; background: #fff;
+    transition: border-color .3s, box-shadow .3s;
+    &:focus { outline: none; border-color: $c-leaf; box-shadow: 0 0 0 4px rgba($c-leaf, .2); }
+  }
+  textarea { min-height: 180px; resize: vertical; }
+  &__field.is-error { input, select, textarea { border-color: #C0573A; } }
+  &__error { display: none; color: #B24A2E; font-size: 13px; margin-top: 6px; }
+  &__field.is-error &__error { display: block; }
+  &__radios { display: flex; flex-wrap: wrap; gap: 10px; }
+  &__radio {
+    input { position: absolute; opacity: 0; }
+    span { display: inline-block; padding: 10px 18px; border-radius: 999px; border: 1.5px solid $c-line; background: #fff; cursor: pointer; font-size: 14.5px; transition: border-color .3s, background .3s; }
+    input:checked + span { border-color: $c-deep; background: $c-leaf-pale; font-weight: 700; color: $c-deep; }
+    input:focus-visible + span { outline: 3px solid rgba($c-leaf, .7); outline-offset: 2px; }
+  }
+}
+
+// ===== トースト =====
+.c-toast {
+  position: fixed; left: 50%; bottom: 28px; z-index: 500;
+  transform: translate(-50%, 20px); opacity: 0; transition: transform .4s $ease, opacity .4s;
+  background: $c-deep; color: $c-paper; padding: 12px 22px; border-radius: 999px; font-size: 14px; pointer-events: none;
+  max-width: calc(100% - 32px); text-align: center;
+  &.is-show { transform: translate(-50%, 0); opacity: 1; }
+}
+
+// ===== 表 =====
+.c-table {
+  width: 100%; border-collapse: collapse; background: $c-paper; border-radius: $radius; overflow: hidden; font-size: 15px;
+  th, td { padding: 16px 18px; border-bottom: 1px dashed $c-line; text-align: left; vertical-align: top; }
+  thead th { background: $c-deep; color: $c-paper; font-family: $f-body; font-weight: 700; }
+  tbody th { font-weight: 700; color: $c-deep; white-space: nowrap; }
+  .is-hl { background: rgba($c-leaf, .12); }
+  &--center { th, td { text-align: center; vertical-align: middle; } }
+  // 定期便のプラン：縦線を入れ、価格の2列は同じ幅にそろえる
+  &--plan {
+    table-layout: fixed;
+    th, td { border-right: 1px dashed $c-line; &:last-child { border-right: 0; } }
+    tbody th { white-space: normal; word-break: keep-all; } // 狭い列では <wbr> の位置で折り返す
+    thead th { border-right-color: rgba(255, 255, 255, .25); }
+    col.c-set { width: 17%; } col.c-amount { width: 35%; } col.c-price { width: 24%; }
+    @include sp { col.c-set { width: 19%; } col.c-amount { width: 33%; } col.c-price { width: 24%; } th, td { padding: 12px 6px; } }
+  }
+  // 送料表：地域の列を広く、料金の2列は同じ幅
+  &--ship {
+    col.c-area { width: 46%; } col.c-price { width: 27%; }
+    @include sp { col.c-area { width: 40%; } col.c-price { width: 30%; } }
+  }
+  &-wrap { overflow-x: auto; border-radius: $radius; border: 1px solid $c-line; }
+  @include sp { font-size: 14px; th, td { padding: 12px; } }
+}
+
+// ===== 下層ページの見出し =====
+.c-page-head {
+  padding: 72px 0 40px;
+  position: relative;
+  overflow: hidden;
+  @include sp { padding: 48px 0 44px; }
+  @include sp { .c-breadcrumb, &__en { padding-right: 84px; } }
+  &__en { font-family: $f-display; font-style: italic; font-weight: 500; font-size: 22px; letter-spacing: .02em; color: $c-soil; }
+  &__title { font-family: $f-head; font-weight: 600; color: $c-deep; font-size: clamp(32px, 4.4vw, 52px); letter-spacing: .06em; line-height: 1.4; margin-top: 6px; }
+  &__lead { margin-top: 18px; color: $c-ink-sub; max-width: 36em; }
+  // 野菜写真は、内容の幅（l-container）の右端に置く。画面幅が変わっても、下の商品一覧などの右端にそろう
+  > .l-container { position: relative; }
+  &__text { padding-right: 200px; @include sp { padding-right: 0; } }
+  &__deco {
+    position: absolute; right: 40px; top: 50%; transform: translateY(-30%); width: 130px; height: 150px;
+    object-fit: contain; filter: drop-shadow(0 10px 12px rgba(80, 60, 25, .18));
+    @include tab { right: 0; }
+    // スマホ：見出し・リード文にかぶらないよう、パンくずと英字ラベルの右横（右上）に置く
+    @include sp { transform: none; width: 72px; height: 92px; top: -8px; right: 0; }
+  }
+}
+.c-breadcrumb { font-size: 12.5px; color: $c-ink-sub; margin-bottom: 22px;
+  a { text-decoration: underline; text-underline-offset: 3px; }
+  span { margin: 0 8px; }
+}
+
+// ===== 最後の購入導線 =====
+.c-cta {
+  position: relative; overflow: hidden; border-radius: 24px; color: #fff;
+  padding: 96px 48px; text-align: center; isolation: isolate;
+  @include sp { padding: 64px 24px; border-radius: 18px; }
+  .c-media { position: absolute; inset: 0; border-radius: 0; aspect-ratio: auto; z-index: -2; }
+  &::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(31, 40, 26, .55), rgba(31, 40, 26, .72)); }
+  &__title { font-family: $f-head; font-size: clamp(28px, 3.6vw, 44px); letter-spacing: .06em; line-height: 1.5; @include sp { font-size: 24px; letter-spacing: .04em; } }
+  &__text { margin: 18px auto 34px; max-width: 30em; color: #F1EADB; }
+  &__note { margin-top: 14px; font-size: 13px; color: #E2D9C6; }
+}
+
+// ===== スクロールで表示 =====
+.js-reveal {
+  opacity: 0; transform: translateY(28px);
+  transition: opacity .8s $ease, transform .8s $ease;
+  transition-delay: var(--delay, 0s);
+  &.is-in { opacity: 1; transform: none; }
+}
+html.no-js .js-reveal, html.no-js .c-media img { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+  .js-reveal { opacity: 1; transform: none; }
+}
+
+// ===== 仮ロゴ（ヘッダー・フッター） =====
+.c-logo {
+  overflow: visible;
+  &__jp { font-family: $f-head; font-weight: 600; font-size: 25px; letter-spacing: .06em; fill: $c-deep; }
+  &__en { font-family: $f-display; font-style: italic; font-weight: 500; font-size: 11.5px; letter-spacing: .04em; fill: $c-soil; }
+  &--footer { .c-logo__jp { fill: #F6F1E6; } .c-logo__en { fill: #D9C7A6; } }
+}
+
+// ===== ボタンを並べるとき：横並び・縦並びとも同じ大きさにそろえる（全体の幅は文字に合わせる） =====
+.c-btns {
+  // 並んだボタンは、いちばん長い文字のボタンに合わせて同じ幅・同じ高さにそろえる（全体は文字に合わせた幅）
+  display: grid; grid-auto-flow: column; grid-auto-columns: 1fr;
+  gap: 14px; width: fit-content; max-width: 100%; margin-inline: auto;
+  .c-btn { width: 100%; height: 100%; min-height: 64px; }
+  .c-btn__note { display: block; }
+  @include sp { grid-auto-flow: row; }
+}
+
+// ページ見出しのすぐ下のセクションは、上の余白を詰める（見出しと内容を近づける）
+.c-page-head + .c-wave + .l-section { padding-top: 56px; @include sp { padding-top: 40px; } }
+
+// リアルな野菜の切り抜き写真（縦横比がまちまちなので、枠に収めて表示）
+img[src*="photo/fv/veg-"] { object-fit: contain; }
+
+// お知らせ（確認・完了メッセージ）
+.c-notice {
+  display: flex; gap: 8px; align-items: flex-start;
+  padding: 14px 18px; border-radius: 12px; background: $c-leaf-pale; color: $c-deep;
+  font-size: 14px; line-height: 1.7;
+}
+
+// ===== プルダウン（select）：矢印の分だけ右に余白をとり、文字と矢印がくっつかないように =====
+select, .c-select {
+  -webkit-appearance: none; appearance: none;
+  min-width: 10em; padding: 14px 52px 14px 16px; border-radius: 10px; border: 1.5px solid $c-line;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%232F5134' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 8l5 5 5-5'/%3E%3C/svg%3E") no-repeat right 18px center / 16px 16px;
+  font: inherit; color: inherit; cursor: pointer;
+  &:focus { outline: none; border-color: $c-leaf; box-shadow: 0 0 0 4px rgba($c-leaf, .2); }
+}
+.c-form select { width: 100%; }
