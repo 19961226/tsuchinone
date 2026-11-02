@@ -1227,3 +1227,19 @@ html.is-arrive main { animation: page-arrive .8s cubic-bezier(.22, 1, .36, 1) bo
   .c-btn { white-space: nowrap; padding-inline: 40px; }
   @include sp { margin-inline: auto; }
 }
+
+// =========================================================
+// スマホ：本文は右端までそろえる（途中で折り返して右に余白が出ないように）
+// =========================================================
+@include sp {
+  p, li, dd { text-wrap: wrap; }
+}
+// 左寄せの本文だけに JS で付けるクラス（中央寄せの文章には付けない）
+.is-justify { text-align: justify; text-justify: inter-character; }
+
+// 上へ戻るボタン：少し大きく、少し内側（左上）へ
+.c-totop { right: 36px; bottom: 36px; width: 72px; height: 72px; gap: 2px;
+  svg { width: 24px; height: 24px; }
+  span { font-size: 11px; }
+  @include sp { right: 22px; bottom: 24px; width: 62px; height: 62px; svg { width: 21px; height: 21px; } span { font-size: 10px; } }
+}
