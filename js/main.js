@@ -63,8 +63,68 @@
       if (a === "start" || a === "left") el.classList.add("is-justify");
     });
   };
-  justifyText();
-  window.addEventListener("resize", justifyText);
+  /* ---------- スマホ：2行目以降が「1文字」や「1文字＋。」だけになるとき ----------
+     その文（<br>で区切られたまとまり）だけ字間をほんの少し詰めて、ひとつ上の行に収める */
+  const PUNCT = /[。、．，」』）\)！？!?・ー]/;
+  const lineInfo = (root) => {
+    const fs = parseFloat(getComputedStyle(root.parentElement || root).fontSize) || 15;
+    let lines = 0, top = null, last = "";
+    const roots = root.nodeType === 3 ? [root] : [root];
+    roots.forEach((r) => {
+      const w = r.nodeType === 3 ? null : document.createTreeWalker(r, NodeFilter.SHOW_TEXT);
+      const nodes = w ? (() => { const a = []; let n; while ((n = w.nextNode())) a.push(n); return a; })() : [r];
+      nodes.forEach((n) => {
+        for (let i = 0; i < n.length; i++) {
+          const ch = n.data[i];
+          if (/\s/.test(ch)) continue;
+          const rg = document.createRange(); rg.setStart(n, i); rg.setEnd(n, i + 1);
+          const q = rg.getBoundingClientRect();
+          if (!q.width && !q.height) continue;
+          if (top === null || q.top > top + fs * 0.5) { lines++; top = q.top; last = ""; }
+          last += ch;
+        }
+      });
+    });
+    return { lines, last };
+  };
+  const isOrphan = (last) => last.length === 1 || (last.length === 2 && PUNCT.test(last[1]));
+  const fitOrphans = () => {
+    const sp = window.innerWidth <= 767;
+    $$("main p, main li, main dd, .c-modal p, .c-modal dd, .p-news__item h3, .p-topnews__title, main td, main tbody th").forEach((el) => {
+      $$(".u-fit", el).forEach((f) => (f.style.letterSpacing = ""));
+      if (!sp || !el.offsetParent || el.closest(".p-story")) return;
+      // 中にカードや画像などのブロック要素がある項目は対象外（文章だけの段落に使う）
+      if ([...el.querySelectorAll("*")].some((c) => c.nodeName !== "BR" && !c.classList.contains("u-fit") && !/^inline/.test(getComputedStyle(c).display))) return;
+      const segs = []; let cur = [];
+      [...el.childNodes].forEach((n) => { if (n.nodeName === "BR") { segs.push(cur); cur = []; } else cur.push(n); });
+      segs.push(cur);
+      segs.forEach((nodes) => {
+        if (!nodes.some((n) => n.textContent.trim())) return;
+        let span = nodes.length === 1 && nodes[0].classList && nodes[0].classList.contains("u-fit") ? nodes[0] : null;
+        if (!span) {
+          // 1行目が途中で折り返す文だけを対象に、まとまりを <span class="u-fit"> で包む
+          const probe = document.createElement("span");
+          probe.className = "u-fit";
+          nodes[0].before(probe);
+          nodes.forEach((n) => probe.appendChild(n));
+          span = probe;
+        }
+        const info = lineInfo(span);
+        if (info.lines < 2 || !isOrphan(info.last)) return;
+        const base = parseFloat(getComputedStyle(span).letterSpacing) || 0;
+        for (let k = 1; k <= 8; k++) {
+          span.style.letterSpacing = `${(base - k * 0.15).toFixed(2)}px`;
+          if (lineInfo(span).lines < info.lines) return;
+        }
+        span.style.letterSpacing = "";
+      });
+    });
+  };
+  const layoutText = () => { justifyText(); fitOrphans(); };
+  let textTimer = 0;
+  layoutText();
+  document.fonts?.ready.then(layoutText);
+  window.addEventListener("resize", () => { clearTimeout(textTimer); textTimer = setTimeout(layoutText, 200); });
 
   /* ---------- 上へ戻るボタン ---------- */
   const totop = $("[data-totop]");
@@ -528,7 +588,7 @@
       watchImages(list);
       observeReveal(list);
     });
-    justifyText();
+    layoutText();
   };
 
   // 商品一覧の絞り込み
@@ -591,7 +651,7 @@
         </div>
       </div>`;
     watchImages(modal);
-    justifyText();
+    requestAnimationFrame(layoutText);
     lastFocus = document.activeElement;
     modal.classList.add("is-open");
     modal.setAttribute("aria-hidden", "false");
