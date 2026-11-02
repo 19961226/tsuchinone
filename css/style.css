@@ -5775,3 +5775,74 @@ html.is-arrive main {
     font-size: 10px;
   }
 }
+
+.c-table thead th {
+  white-space: nowrap;
+}
+
+@media (max-width: 1023px) {
+  .c-table__sub {
+    display: block;
+    font-size: 0.9em;
+  }
+}
+
+@media (max-width: 767px) {
+  .c-table thead th {
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    padding-inline: 4px;
+  }
+  .c-table--ship col.c-area {
+    width: 34%;
+  }
+  .c-table--ship col.c-price {
+    width: 26%;
+  }
+  .c-table--ship col.c-price:last-child {
+    width: 40%;
+  }
+  .c-table--ship tbody th {
+    font-size: 13.5px;
+  }
+}
+@media (max-width: 767px) {
+  .l-footer__grid > div:nth-child(2) {
+    width: auto;
+    margin-inline: 0;
+    text-align: left;
+  }
+  .l-footer__shop {
+    display: block;
+    text-align: left;
+  }
+  .l-footer__title {
+    text-align: left;
+  }
+}
+@media (max-width: 767px) {
+  .c-table--ship tbody th {
+    padding-inline: 4px;
+  }
+}
+.c-table--plan td {
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.u-nw {
+  white-space: nowrap;
+}
+
+@media (max-width: 767px) {
+  .p-promise__title {
+    font-size: min(22px, 5.7vw);
+    letter-spacing: 0.02em;
+  }
+}
+@media (max-width: 767px) {
+  .p-promise .c-head__title {
+    white-space: nowrap;
+    font-size: min(28px, 7.6vw);
+  }
+}
