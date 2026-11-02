@@ -1290,3 +1290,5 @@ html.is-arrive main { animation: page-arrive .8s cubic-bezier(.22, 1, .36, 1) bo
 
 // 私たちについて：「野菜を使っていただいている飲食店」はスマホでも1行に
 @include sp { .p-partners__title { white-space: nowrap; font-size: min(26px, 5.05vw); } }
+// 表の中身：まず言葉の区切りで折り返し、それでも入らないときは欄の中で折り返す（はみ出さない）
+.c-table td, .c-table tbody th { overflow-wrap: anywhere; }
