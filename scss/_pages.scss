@@ -1243,3 +1243,33 @@ html.is-arrive main { animation: page-arrive .8s cubic-bezier(.22, 1, .36, 1) bo
   span { font-size: 11px; }
   @include sp { right: 22px; bottom: 24px; width: 62px; height: 62px; svg { width: 21px; height: 21px; } span { font-size: 10px; } }
 }
+
+// =========================================================
+// 表の見出し（項目）は、どの画面幅でも1行に。
+// 「定期便価格（10%オフ）」だけは、狭い画面で（10%オフ）を2行目に
+// =========================================================
+.c-table thead th { white-space: nowrap; }
+.c-table__sub { @include tab { display: block; font-size: .9em; } }
+@include sp {
+  .c-table thead th { font-size: 13px; letter-spacing: .02em; padding-inline: 4px; }
+  // 送料表：「クール便の追加料金」が1行に入るよう、列の幅を調整
+  .c-table--ship { col.c-area { width: 34%; } col.c-price { width: 26%; } col.c-price:last-child { width: 40%; } }
+  .c-table--ship tbody th { font-size: 13.5px; }
+}
+
+// =========================================================
+// フッター（スマホ）：「メニュー」「農園の直売所」は左寄せ。
+// 左端は、ページの本文の始まり（コンテンツの左端）にそろえる
+// =========================================================
+@include sp {
+  .l-footer__grid > div:nth-child(2) { width: auto; margin-inline: 0; text-align: left; }
+  .l-footer__shop { display: block; text-align: left; }
+  .l-footer__title { text-align: left; }
+}
+@include sp { .c-table--ship tbody th { padding-inline: 4px; } }
+// 表の中身：言葉の途中で折り返さず、スペースや「（」の前で折り返す
+.c-table--plan td { word-break: keep-all; overflow-wrap: anywhere; }
+.u-nw { white-space: nowrap; }
+// 3つの約束：「12軒の生産者の顔と畑を公開」はスマホでも1行に
+@include sp { .p-promise__title { font-size: min(22px, 5.7vw); letter-spacing: .02em; } }
+@include sp { .p-promise .c-head__title { white-space: nowrap; font-size: min(28px, 7.6vw); } }
