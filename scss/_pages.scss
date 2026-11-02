@@ -1273,3 +1273,20 @@ html.is-arrive main { animation: page-arrive .8s cubic-bezier(.22, 1, .36, 1) bo
 // 3つの約束：「12軒の生産者の顔と畑を公開」はスマホでも1行に
 @include sp { .p-promise__title { font-size: min(22px, 5.7vw); letter-spacing: .02em; } }
 @include sp { .p-promise .c-head__title { white-space: nowrap; font-size: min(28px, 7.6vw); } }
+
+// =========================================================
+// 表（スマホ）：どの幅でも中身が欄からはみ出さないよう、文字の大きさを画面幅に合わせる
+// =========================================================
+@include sp {
+  .c-table { font-size: clamp(11px, 3.4vw, 14px); letter-spacing: .01em;
+    th, td { padding: 10px 4px; }
+    thead th { font-size: 1em; padding-inline: 3px; letter-spacing: 0; }
+    tbody th { font-size: 1em; }
+    small { font-size: .82em; }
+  }
+  .c-table--plan { col.c-set { width: 22%; } col.c-amount { width: 30%; } col.c-price { width: 24%; } }
+  .c-table--ship { col.c-area { width: 34%; } col.c-price { width: 26%; } col.c-price:last-child { width: 40%; } tbody th { font-size: 1em; padding-inline: 4px; } }
+}
+
+// 私たちについて：「野菜を使っていただいている飲食店」はスマホでも1行に
+@include sp { .p-partners__title { white-space: nowrap; font-size: min(26px, 5.05vw); } }
