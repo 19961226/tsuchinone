@@ -5894,3 +5894,6 @@ html.is-arrive main {
     font-size: min(26px, 5.05vw);
   }
 }
+.c-table td, .c-table tbody th {
+  overflow-wrap: anywhere;
+}
