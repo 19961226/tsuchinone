@@ -52,6 +52,20 @@
     smoothTo(el);
   });
 
+  /* ---------- スマホ：左寄せの本文を両端そろえにする ----------
+     日本語の文章が途中で折り返して右側に余白が出ないように。中央寄せの文章はそのまま */
+  const justifyText = () => {
+    const sp = window.innerWidth <= 767;
+    $$("main p, main li, main dd, .c-modal p, .c-modal dd").forEach((el) => {
+      if (!sp) { el.classList.remove("is-justify"); return; }
+      if (el.classList.contains("is-justify")) return;
+      const a = getComputedStyle(el).textAlign;
+      if (a === "start" || a === "left") el.classList.add("is-justify");
+    });
+  };
+  justifyText();
+  window.addEventListener("resize", justifyText);
+
   /* ---------- 上へ戻るボタン ---------- */
   const totop = $("[data-totop]");
   if (totop) {
@@ -514,6 +528,7 @@
       watchImages(list);
       observeReveal(list);
     });
+    justifyText();
   };
 
   // 商品一覧の絞り込み
@@ -576,6 +591,7 @@
         </div>
       </div>`;
     watchImages(modal);
+    justifyText();
     lastFocus = document.activeElement;
     modal.classList.add("is-open");
     modal.setAttribute("aria-hidden", "false");
