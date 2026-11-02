@@ -5735,3 +5735,43 @@ html.is-arrive main {
     margin-inline: auto;
   }
 }
+
+@media (max-width: 767px) {
+  p, li, dd {
+    text-wrap: wrap;
+  }
+}
+.is-justify {
+  text-align: justify;
+  text-justify: inter-character;
+}
+
+.c-totop {
+  right: 36px;
+  bottom: 36px;
+  width: 72px;
+  height: 72px;
+  gap: 2px;
+}
+.c-totop svg {
+  width: 24px;
+  height: 24px;
+}
+.c-totop span {
+  font-size: 11px;
+}
+@media (max-width: 767px) {
+  .c-totop {
+    right: 22px;
+    bottom: 24px;
+    width: 62px;
+    height: 62px;
+  }
+  .c-totop svg {
+    width: 21px;
+    height: 21px;
+  }
+  .c-totop span {
+    font-size: 10px;
+  }
+}
