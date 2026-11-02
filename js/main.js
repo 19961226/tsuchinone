@@ -120,7 +120,27 @@
       });
     });
   };
-  const layoutText = () => { justifyText(); fitOrphans(); };
+  /* ---------- 表：中身がどの欄からもはみ出さないよう、はみ出すときだけ文字を少しずつ小さくする ---------- */
+  const cellOver = (c) => {
+    const cs = getComputedStyle(c);
+    const r = c.getBoundingClientRect();
+    const L = r.left + parseFloat(cs.paddingLeft) - 1, R = r.right - parseFloat(cs.paddingRight) + 1;
+    const rg = document.createRange(); rg.selectNodeContents(c);
+    return [...rg.getClientRects()].some((q) => q.width && (q.right > R || q.left < L));
+  };
+  const fitTables = () => {
+    $$(".c-table").forEach((t) => {
+      t.style.fontSize = "";
+      if (!t.offsetParent) return;
+      let fs = parseFloat(getComputedStyle(t).fontSize);
+      const cells = $$("th, td", t);
+      for (let n = 0; n < 16 && fs > 10 && cells.some(cellOver); n++) {
+        fs -= 0.5;
+        t.style.fontSize = `${fs}px`;
+      }
+    });
+  };
+  const layoutText = () => { fitTables(); justifyText(); fitOrphans(); };
   let textTimer = 0;
   layoutText();
   document.fonts?.ready.then(layoutText);
