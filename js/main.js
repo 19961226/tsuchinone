@@ -288,53 +288,6 @@
       drawScenes(p);
       replayLogo(p);
     };
-    // 野菜が文字にかぶらないよう、文字が出ている間は、重なる野菜を横へよける
-    const vegs = $$(".p-story__veg", story).map((el) => ({ el, dx: 0 }));
-    const textBoxes = () => {
-      const boxes = [];
-      const add = (el, pad = 14) => {
-        const rg = document.createRange(); rg.selectNodeContents(el);
-        const r = rg.getBoundingClientRect();
-        if (r.width) boxes.push({ l: r.left - pad, r: r.right + pad, t: r.top - pad, b: r.bottom + pad });
-      };
-      scenes.forEach((s) => {
-        if (!(parseFloat(s.el.style.opacity) > 0.05)) return;
-        const parts = s.el.matches(".p-story__msg") ? [s.el] : $$(".p-story__msg, .p-story__cta > *", s.el);
-        parts.forEach((c) => add(c));
-      });
-      const logo = $(".p-story__logo", story);
-      if (logo && parseFloat(getComputedStyle(logo).opacity) > 0.05) $$(".p-story__logo-svg, .p-story__tagline", logo).forEach((c) => {
-        const r = c.getBoundingClientRect(); boxes.push({ l: r.left - 10, r: r.right + 10, t: r.top - 10, b: r.bottom + 10 });
-      });
-      return boxes;
-    };
-    let avoidOn = false;
-    const avoid = () => {
-      const sr = story.getBoundingClientRect();
-      if (sr.bottom < 0 || sr.top > window.innerHeight) { avoidOn = false; return; }
-      const boxes = textBoxes();
-      vegs.forEach((v) => {
-        const r = v.el.getBoundingClientRect();
-        // 画像の透明な余白を除いて、野菜の見た目に近い範囲で判定
-        const ix = r.width * 0.14, iy = r.height * 0.1;
-        const vl = r.left - v.dx + ix, vr = r.right - v.dx - ix, vt = r.top + iy, vb = r.bottom - iy;
-        let target = 0;
-        boxes.forEach((b) => {
-          if (vb < b.t || vt > b.b) return; // 縦に重ならない
-          if (vr + target < b.l || vl + target > b.r) return; // すでに横に外れている
-          const toLeft = b.l - vr, toRight = b.r - vl; // 左へよける量（負）／右へよける量（正）
-          target = (vl + vr) / 2 < (b.l + b.r) / 2 ? Math.min(target, toLeft) : Math.max(target, toRight);
-        });
-        v.dx += (target - v.dx) * (reduceMotion ? 1 : 0.16);
-        if (Math.abs(v.dx) < 0.3 && target === 0) v.dx = 0;
-        v.el.style.setProperty("--dx", `${v.dx.toFixed(1)}px`);
-      });
-      requestAnimationFrame(avoid);
-    };
-    const startAvoid = () => { if (!avoidOn) { avoidOn = true; requestAnimationFrame(avoid); } };
-    startAvoid();
-    window.addEventListener("scroll", startAvoid, { passive: true });
-
     const onStory = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
     window.addEventListener("scroll", onStory, { passive: true });
     window.addEventListener("resize", onStory);
