@@ -1980,7 +1980,7 @@ select:focus, .c-select:focus {
   left: var(--x);
   top: var(--y);
   width: var(--w);
-  transform: translate3d(var(--dx, 0px), calc(var(--p) * var(--speed) * -70vh), 0) rotate(calc(var(--p) * var(--rot) * 1deg));
+  transform: translate3d(0, calc(var(--p) * var(--speed) * -70vh), 0) rotate(calc(var(--p) * var(--rot) * 1deg));
   filter: drop-shadow(0 16px 18px rgba(80, 60, 25, 0.22));
   will-change: transform;
 }
