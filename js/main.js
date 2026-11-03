@@ -780,25 +780,37 @@
     };
 
     // ドラッグ・スワイプ
+    // 指やマウスが触れただけでは回転を止めない。横に動かしたときだけドラッグとして回す（タップは別：カードが飛ぶ演出）
+    let pressed = false, startX = 0;
+    const DRAG_START = 8; // これ以上横に動いたらドラッグ
     viewport.addEventListener("pointerdown", (e) => {
-      dragging = true; moved = 0; vel = 0; target = null;
-      lastX = e.clientX; lastT = performance.now();
-      ring.classList.add("is-dragging");
+      pressed = true; dragging = false; moved = 0;
+      startX = lastX = e.clientX; lastT = performance.now();
     });
     window.addEventListener("pointermove", (e) => {
-      if (!dragging) return;
+      if (!pressed) return;
+      if (!dragging) {
+        if (Math.abs(e.clientX - startX) < DRAG_START) return;
+        dragging = true; vel = 0; target = null; moved = DRAG_START;
+        lastX = e.clientX; lastT = performance.now();
+        ring.classList.add("is-dragging");
+        return;
+      }
       const dx = e.clientX - lastX, t = performance.now();
       const deg = dx * (180 / (Math.PI * radius)) * 0.9;
       rot += deg; moved += Math.abs(dx);
       vel = deg / Math.max(0.016, (t - lastT) / 1000) * 0.6 + vel * 0.4;
       lastX = e.clientX; lastT = t;
     });
-    window.addEventListener("pointerup", () => {
+    const release = () => {
+      pressed = false;
       if (!dragging) return;
       dragging = false; ring.classList.remove("is-dragging");
-      idleTimer = Date.now() + 2500; // 手で回したあと少し待ってから自動回転に戻る
+      idleTimer = Date.now() + 1500; // 手で回したあと少し待ってから自動回転に戻る
       if (Math.abs(vel) <= 2) target = snapTarget();
-    });
+    };
+    window.addEventListener("pointerup", release);
+    window.addEventListener("pointercancel", release); // 縦スクロールに切り替わったとき
     // カードを押す：正面なら商品ページへ、それ以外なら正面へ回す
     cards.forEach((c, i) => {
       c.querySelector(".p-ring__face").addEventListener("click", () => {
