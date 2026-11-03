@@ -700,7 +700,7 @@
   });
 
   /* ---------- 商品ラインナップ：3Dの円形カルーセル ----------
-     自動でゆっくり回転（ホバーで停止）／ドラッグ・スワイプで回して慣性で流れる／
+     自動でゆっくり回転（ホバーしても止まらない）／ドラッグ・スワイプで回して慣性で流れる／
      止まると正面のカードにぴったり合う／カードを押すと正面へ、正面のカードを押すと商品ページへ */
   $$("[data-ring]").forEach((ring) => {
     const track = $(".p-ring__track", ring);
@@ -853,11 +853,19 @@
       if (e.key === "ArrowRight") go(1);
       if (e.key === "Enter") flyTo(cards[front]);
     });
-    // カードの上にカーソルがあるときだけ止める（カードの外側では回り続ける）
-    cards.forEach((c) => {
-      const face = c.querySelector(".p-ring__face");
-      face.addEventListener("pointerenter", (e) => { if (e.pointerType === "mouse") hover = true; });
-      face.addEventListener("pointerleave", (e) => { if (e.pointerType === "mouse") hover = false; });
+    // ホバーしても回転は止めない（回り続ける）
+    // 「中身と価格を見る」を押したときも、正面のカードが大きくなって上へ飛ぶ演出でページへ移る
+    captions.forEach((cap) => {
+      const a = $("a", cap);
+      if (!a) return;
+      a.addEventListener("click", (e) => {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return; // 新しいタブで開くときはそのまま
+        e.preventDefault();
+        const idx = parseInt(cap.dataset.index, 10);
+        // 正面のカードを使う（同じ商品のカードが2枚あるので、正面に近いほう）
+        const card = parseInt(cards[front].dataset.index, 10) === idx ? cards[front] : cards.find((c) => parseInt(c.dataset.index, 10) === idx);
+        flyTo(card);
+      });
     });
 
     layout();
