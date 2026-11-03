@@ -1292,3 +1292,29 @@ html.is-arrive main { animation: page-arrive .8s cubic-bezier(.22, 1, .36, 1) bo
 @include sp { .p-partners__title { white-space: nowrap; font-size: min(26px, 5.05vw); } }
 // 表の中身：まず言葉の区切りで折り返し、それでも入らないときは欄の中で折り返す（はみ出さない）
 .c-table td, .c-table tbody th { overflow-wrap: anywhere; }
+
+// =========================================================
+// FV：文字の後ろの明るいぼかしを広げ、野菜（人参の葉など）と重なっても読めるように
+// =========================================================
+.p-story__msg, .p-story__cta { position: relative; isolation: isolate; }
+.p-story__msg {
+  background: none !important;
+  &::before {
+    content: ""; position: absolute; inset: -22% -16%; z-index: -1; pointer-events: none;
+    background: radial-gradient(closest-side, rgba(227, 215, 173, .98), rgba(227, 215, 173, .95) 50%, rgba(227, 215, 173, .75) 72%, rgba(227, 215, 173, 0));
+    @include sp { inset: -30% -14%; }
+  }
+}
+.p-story__cta::before {
+  inset: -28% -26%;
+  background: radial-gradient(closest-side, rgba(227, 215, 173, .98), rgba(227, 215, 173, .94) 50%, rgba(227, 215, 173, .72) 72%, rgba(227, 215, 173, 0));
+  @include sp { inset: -24% -12%; }
+}
+// 文字の形に沿った角丸の面＋やわらかい広がり（端の文字まで背景が届くように）
+.p-story__msg::before, .p-story__cta::before {
+  inset: 2% 4%;
+  border-radius: 48px;
+  background: rgba(227, 215, 173, .93);
+  box-shadow: 0 0 46px 34px rgba(227, 215, 173, .9);
+  @include sp { inset: 4% 0; box-shadow: 0 0 36px 26px rgba(227, 215, 173, .9); }
+}
